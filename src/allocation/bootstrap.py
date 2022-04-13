@@ -4,6 +4,7 @@ from allocation.adapters import orm, redis_eventpublisher
 from allocation.adapters.notifications import (
     AbstractNotifications,
     EmailNotifications,
+    # TwilioNotifications,
 )
 from allocation.service_layer import handlers, messagebus, unit_of_work
 
@@ -12,16 +13,25 @@ def bootstrap(
     start_orm: bool = True,
     uow: unit_of_work.AbstractUnitOfWork = unit_of_work.SqlAlchemyUnitOfWork(),
     notifications: AbstractNotifications = None,
+    # sms_notifications: AbstractNotifications = None,
     publish: Callable = redis_eventpublisher.publish,
 ) -> messagebus.MessageBus:
 
     if notifications is None:
         notifications = EmailNotifications()
 
+    # if sms_notifications is None:
+    #     sms_notifications = TwilioNotifications()
+
     if start_orm:
         orm.start_mappers()
 
-    dependencies = {"uow": uow, "notifications": notifications, "publish": publish}
+    dependencies = {
+        "uow": uow,
+        "notifications": notifications,
+        # "sms_notifications": sms_notifications,
+        "publish": publish
+    }
     injected_event_handlers = {
         event_type: [
             inject_dependencies(handler, dependencies)

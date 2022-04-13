@@ -69,6 +69,13 @@ def send_out_of_stock_notification(
         f"Out of stock for {event.sku}",
     )
 
+# def send_out_of_stock_sms_notification(
+#     event: events.OutOfStock,
+#     sms_notifications: notification.AbstractNotifications,
+# ):
+#     sms_notifications.send(
+#         f"Out of stock for {event.sku}"
+#     )
 
 def publish_allocated_event(
     event: events.Allocated,
@@ -110,7 +117,10 @@ def remove_allocation_from_read_model(
 EVENT_HANDLERS = {
     events.Allocated: [publish_allocated_event, add_allocation_to_read_model],
     events.Deallocated: [remove_allocation_from_read_model, reallocate],
-    events.OutOfStock: [send_out_of_stock_notification],
+    events.OutOfStock: [
+        send_out_of_stock_notification,
+        # send_out_of_stock_sms_notification
+    ],
 }  # type: Dict[Type[events.Event], List[Callable]]
 
 COMMAND_HANDLERS = {

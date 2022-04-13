@@ -3,6 +3,10 @@ import abc
 import smtplib
 from allocation import config
 
+# import os
+# from twilio.rest import Client
+
+
 
 class AbstractNotifications(abc.ABC):
     @abc.abstractmethod
@@ -26,3 +30,19 @@ class EmailNotifications(AbstractNotifications):
             to_addrs=[destination],
             msg=msg,
         )
+
+
+# class TwilioNotifications(AbstractNotifications):
+#     def __init__(self):
+#         account_sid = os.environ['TWILIO_ACCOUNT_SID']
+#         auth_token = os.environ['TWILIO_AUTH_TOKEN']
+#         self.client = Client(account_sid, auth_token)    
+    
+#     def send(self, message):
+        # https://www.twilio.com/docs/sms
+
+        # message = self.client.messages.create(
+        #     body=message,
+        #     from_='+15017122661',
+        #     to='+15558675310'
+        # )

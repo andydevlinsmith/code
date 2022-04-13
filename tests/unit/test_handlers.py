@@ -44,9 +44,17 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
 class FakeNotifications(notifications.AbstractNotifications):
     def __init__(self):
         self.sent = defaultdict(list)  # type: Dict[str, List[str]]
+        self.sent_text = []  # type: [List[str]]
 
     def send(self, destination, message):
         self.sent[destination].append(message)
+
+# class FakeSMSNotifications(notifications.AbstractNotifications):
+#     def __init__(self):
+#         self.sent = []  # type: List[str]
+
+#     def send(self, message):
+#         self.sent.append(message)
 
 
 def bootstrap_test_app():
@@ -108,6 +116,21 @@ class TestAllocate:
         assert fake_notifs.sent["stock@made.com"] == [
             f"Out of stock for POPULAR-CURTAINS",
         ]
+
+    # def test_sends_text_on_out_of_stock(self):
+    #     fake_sms_notifs = FakeSMSNotifications()
+    #     bus = bootstrap.bootstrap(
+    #         start_orm=False,
+    #         uow=FakeUnitOfWork(),
+    #         sms_notifications=fake_sms_notifs,
+    #         publish=lambda *args: None,
+    #     )
+    #     bus.handle(commands.CreateBatch("b1", "POPULAR-CURTAINS", 9, None))
+    #     bus.handle(commands.Allocate("o1", "POPULAR-CURTAINS", 10))
+
+    #     assert fake_sms_notifs.sent[0] == f"Out of stock for POPULAR-CURTAINS"
+
+    #     # assert fake_notifs.sent_text[0] == f"Out of stock for POPULAR-CURTAINS"
 
 
 class TestChangeBatchQuantity:
